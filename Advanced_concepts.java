@@ -12,6 +12,61 @@ Here are some additional advanced features that Formik offers:
 * **Nested forms:** Formik can be used to create nested forms, where each form field is contained within another form field.
 * **Multi-step forms:** Formik can be used to create multi-step forms, where the user progresses through the form step-by-step.
 
+
+
+   Formik is a popular library in React that helps with building forms, handling form state, validation, and submission. It provides various advanced features that simplify form management. Let's explore some of these features:
+
+1. **Visited Fields**: Formik keeps track of which form fields have been visited by the user. This is useful for displaying validation errors or messages only after a field has been touched or visited. Formik provides a `touched` object which is similar to the `errors` object. It keeps track of which fields have been visited and can be used to conditionally display error messages [Source 4](https://blog.logrocket.com/building-forms-formik-react/).
+   
+2. **Form State Persistence**: Formik allows you to persist your form's state in the local storage of the browser. This is useful when you want to preserve the user's input when they navigate away from the form and then return. Unfortunately, Formik does not provide this feature out of the box, and you would have to implement it manually or use a library like `formik-persist` [Source 4](https://blog.logrocket.com/building-forms-formik-react/).
+
+3. **Form Submission**: Formik provides an `onSubmit` prop, which is a function that gets invoked when the form is submitted. This function receives the form values and Formik bag (which includes several useful methods like `setSubmitting`, `resetForm`) as its arguments. You can use this function to handle form submission, like sending the form data to a server [Source 4](https://blog.logrocket.com/building-forms-formik-react/).
+
+4. **Form Validation**: Formik simplifies form validation by providing a `validate` prop. You can pass a function to this prop to handle form validation. This function receives the form values, and it should return an object that maps each field to its error message [Source 4](https://blog.logrocket.com/building-forms-formik-react/). Formik also integrates with Yup, a JavaScript schema builder for value parsing and validation, which allows you to define a schema for your form and validate against it [Source 8](https://www.liquidweb.com/kb/formik-react/).
+
+5. **Formik's `setSubmitting` and `isSubmitting`**: When a form is submitted, you can use the `setSubmitting` function to set the `isSubmitting` property of the Formik's render props to `true`. This can be used to show a loading indicator or disable the submit button. Once the form submission is complete (like after receiving a response from the server), you can call `setSubmitting(false)` to indicate that the submission process is complete [Source 4](https://blog.logrocket.com/building-forms-formik-react/).
+
+Here's an example of using these features in a form:
+
+```jsx
+import { Formik, Form, Field, ErrorMessage } from 'formik';
+import * as Yup from 'yup';
+
+// Define validation schema with Yup
+const validationSchema = Yup.object({
+  email: Yup.string().email('Invalid email address').required('Email is required'),
+  password: Yup.string().min(8, 'Password must be at least 8 characters').required('Password is required'),
+});
+
+const MyForm = () => (
+  <Formik
+    initialValues={{ email: '', password: '' }}
+    validationSchema={validationSchema}
+    onSubmit={(values, { setSubmitting }) => {
+      // Simulate a delay for form submission
+      setTimeout(() => {
+        alert(JSON.stringify(values, null, 2));
+        setSubmitting(false);
+      }, 1000);
+    }}
+  >
+    {({ isSubmitting, touched, errors }) => (
+      <Form>
+        <Field type="email" name="email" />
+        {touched.email && errors.email && <div>{errors.email}</div>}
+        <Field type="password" name="password" />
+        {touched.password && errors.password && <div>{errors.password}</div>}
+        <button type="submit" disabled={isSubmitting}>
+          {isSubmitting ? 'Submitting...' : 'Submit'}
+        </button>
+      </Form>
+    )}
+  </Formik>
+);
+```
+
+In this example, we're using Formik's advanced features like visited fields (`touched`), form state persistence (through `initialValues`), form submission (`onSubmit`), validation (`validationSchema`), and `isSubmitting` to handle form submission [Source 4](https://blog.logrocket.com/building-forms-formik-react/).
+
 I hope this helps!
 
 
